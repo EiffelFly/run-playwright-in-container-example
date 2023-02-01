@@ -6,18 +6,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "integration-test": "npx playwright test",
+    "docker-build-app": "docker build -f Dockerfile -t test-app-image .",
+	  "docker-run-app": "docker run --rm -t -p 3000:3000 test-app-image",
+    "docker-build-test": "docker build -f Dockerfile.playwright --build-arg TEST_USER='root' -t integration-test-image .",
+    "docker-run-test": "docker run --rm -t integration-test-image",
+    "docker-create-test-network": "docker network create integration-test-network",
+    "docker-integration-test": "docker build -f Dockerfile -t test-app-image . && docker ru -d --rm -t --network integration-test-network --name test-app test-app-image && docker build -f Dockerfile.playwright --build-arg TEST_USER='root' -t integration-test-image . && docker run --rm -t --network integration-test-network --name integration-test integration-test-image",
+    "docker-compose-up": "docker-compose --file ./docker-compose.test.yml up --force-recreate --build",
+    "docker-compose-down": "docker compose down"
+
   },
   "dependencies": {
-    "@next/font": "13.1.2",
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.10",
-    "eslint": "8.32.0",
-    "eslint-config-next": "13.1.2",
     "next": "13.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "@next/font": "13.1.2",
+    "@playwright/test": "^1.29.2",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "eslint": "8.32.0",
+    "eslint-config-next": "13.1.2"
   }
 }

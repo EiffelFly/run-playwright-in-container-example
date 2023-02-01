@@ -1,0 +1,25 @@
+version: "3.9"
+
+networks:
+  integration-test-network:
+    driver: bridge
+
+services:
+  test-app:
+    container_name: test-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - integration-test-network
+  integration-test:
+    container_name: integration-test
+    build:
+      context: .
+      dockerfile: Dockerfile.playwright
+      args: 
+        - TEST_USER=root
+    networks:
+      - integration-test-network
+    depends_on:
+      - test-app
